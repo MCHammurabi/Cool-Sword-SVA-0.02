@@ -11,8 +11,17 @@ import UIKit
 class ViewController: UIViewController {
     
     @IBOutlet weak var battleText: UITextView!
-    
+    @IBOutlet weak var playerNameText: UILabel!
+    @IBOutlet weak var playerHealthText: UILabel!
+    @IBOutlet weak var playerATKPwrText: UILabel!
+    @IBOutlet weak var enemyNameText: UILabel!
+    @IBOutlet weak var enemyHealthText: UILabel!
 
+    
+    let player1 = playerChar(playerName: "Lord Steven", playerHitPoints: 20, playerAttackPower: 4)
+    let enemy1 = playerChar(playerName: "Savage Dragon", playerHitPoints: 30, playerAttackPower: 6)
+
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,14 +35,41 @@ class ViewController: UIViewController {
 
     @IBAction func attackButton(sender: AnyObject) {
         var battleOutput = [""]
-        battleOutput.append("You attacked.")
         println("You attacked!")
-        let (diceTotal, diceRolled) = rollDice(20, 1)
-        battleOutput.append("You rolled \(diceTotal).")
-        let hitText = didHit(diceTotal)
+        var (diceTotal, diceRolled) = rollDice(20, 1)
+        battleOutput.append("You attacked and rolled \(diceTotal).")
+        var hitTest = didHit(diceTotal)
+        println(hitTest)
+        let hitText = hitPrint(hitTest.0, hitTest.1)
+        
         battleOutput.append("Your attack \(hitText)")
+        var atkDmg = player1.yourDamage(hitTest.0, critHit: hitTest.1)
+        if hitTest.0 == true {
+            battleOutput.append("\rYou did \(atkDmg) damage!")
+            enemy1.damageTaken(atkDmg)
+        }
+        println("Enemy attacked!")
+        let (diceTotalEnmy, diceRolledEnmy) = rollDice(20, 1)
+        battleOutput.append("\rEnemy attacked and rolled \(diceTotalEnmy).")
+        let hitTestEnmy = didHit(diceTotalEnmy)
+        println(hitTestEnmy)
+        let hitTextEnmy = hitPrint(hitTestEnmy.0, hitTestEnmy.1)
+        
+        battleOutput.append("Enemy attack \(hitTextEnmy)")
+        atkDmg = enemy1.yourDamage(hitTestEnmy.0, critHit: hitTestEnmy.1)
+        if hitTestEnmy.0 == true {
+            battleOutput.append("\rEnemy did \(atkDmg) damage!")
+            player1.damageTaken(atkDmg)
+        }
+        
+        battleOutput.removeAtIndex(0)
         battleText.text = battleTextLines(battleOutput)
-                
+        playerNameText.text = player1.playerName
+        playerHealthText.text = "\(player1.playerCurrentHitPoints) / \(player1.playerHitPoints)"
+        playerATKPwrText.text = "\(player1.playerAttackPower)"
+        enemyNameText.text = enemy1.playerName
+        enemyHealthText.text = "\(enemy1.playerCurrentHitPoints) / \(enemy1.playerHitPoints)"
+        
     }
 
 

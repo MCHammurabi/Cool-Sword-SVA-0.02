@@ -25,21 +25,35 @@ func rollDice(sides: UInt32, rolls: Int) ->(Int,[Int]){         // dice rolling 
     
 }
 
-func didHit(hitChance: Int) ->NSString {
-    var hitMSG = ""
-    
+/*******HIT CHECK*******/
+func didHit(hitChance: Int) ->(Bool, Bool) {
+
+    var playerHit = false
+    var playerCrit = false
     if hitChance >= 19 {
-        hitMSG = "WAS A CRITICAL HIT!"
+        playerHit = true
+        playerCrit = true
     } else if hitChance >= 12 {
-        hitMSG = "HIT!"
+        playerHit = true
+    }
     
+    return (playerHit, playerCrit)
+
+}
+
+func hitPrint(normHit: Bool, critHit: Bool) -> NSString {
+    var hitMSG = ""
+    if critHit == true {
+        hitMSG = "WAS A CRITICAL HIT!"
+    } else if normHit == true {
+        hitMSG = "HIT!"
     } else {
         hitMSG = "missed."
     }
     return hitMSG
-
 }
 
+/*******BATTLE TEXT DISPLAY*******/
 func battleTextLines(textLines: [NSString]) ->NSString {
     var displayText = ""
     var maxLines = 8
