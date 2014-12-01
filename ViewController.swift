@@ -16,6 +16,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var playerATKPwrText: UILabel!
     @IBOutlet weak var enemyNameText: UILabel!
     @IBOutlet weak var enemyHealthText: UILabel!
+    @IBOutlet weak var winsText: UILabel!
+    @IBOutlet weak var lossesText: UILabel!
 
     
     let player1 = playerChar(playerName: "Lord Steven", playerHitPoints: 20, playerAttackPower: 4)
@@ -34,9 +36,10 @@ class ViewController: UIViewController {
     }
 
     @IBAction func attackButton(sender: AnyObject) {
+        var rstAtk = false
         var battleOutput = [""]
         println("You attacked!")
-        var (diceTotal, diceRolled) = rollDice(20, 1)
+        var (diceTotal, diceRolled) = rollDice(10, 3)
         battleOutput.append("You attacked and rolled \(diceTotal).")
         var hitTest = didHit(diceTotal)
         println(hitTest)
@@ -65,11 +68,29 @@ class ViewController: UIViewController {
         battleOutput.removeAtIndex(0)
         battleText.text = battleTextLines(battleOutput)
         playerNameText.text = player1.playerName
+        if player1.playerCurrentHitPoints < 1 {
+            playerNameText.text = player1.playerName + " DEAD"
+            rstAtk = true
+            player1.playerLosses++
+        }
         playerHealthText.text = "\(player1.playerCurrentHitPoints) / \(player1.playerHitPoints)"
         playerATKPwrText.text = "\(player1.playerAttackPower)"
         enemyNameText.text = enemy1.playerName
+        if enemy1.playerCurrentHitPoints < 1 {
+            enemyNameText.text = enemy1.playerName + " DEAD"
+            rstAtk = true
+            player1.playerWins++
+        }
         enemyHealthText.text = "\(enemy1.playerCurrentHitPoints) / \(enemy1.playerHitPoints)"
-        
+        if rstAtk == true {
+            resetAttack()
+        }
+        winsText.text = "\(player1.playerWins)"
+        lossesText.text = "\(player1.playerLosses)"
+    }
+    func resetAttack(){
+        player1.playerCurrentHitPoints = player1.playerHitPoints
+        enemy1.playerCurrentHitPoints = enemy1.playerHitPoints
     }
 
 
